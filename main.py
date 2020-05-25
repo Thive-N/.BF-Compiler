@@ -24,9 +24,16 @@ class App:
         self.Compile=Button(self.frame,width=20,text="Compile",command=self.RunEvaluation).grid(column=0,row=1)
         self.Output=Text(self.frame,width=30)
         self.Output.grid(column=1,row=0)
-        self.ClearOutput=Button(self.frame,text="Clear Output").grid(column = 1 , row = 1)
+        self.ClearOutput=Button(self.frame,text="Clear Output", command=self.clear_output)
+        self.ClearOutput.grid(column = 1 , row = 1)
         #----------------------------------------------------------------------------------------------
 
+
+
+
+    def clear_output(self):
+        if self.Read == False:
+            self.Output.delete("0.0", "end")
         
     def Update_Lists(self):
         text=""
@@ -121,7 +128,7 @@ class App:
         self.Delay=self.TimeDelay.get()
         self.LoopMap=self.find_pairs(self.Bf_Text)
         self.Execute()
-
+        
     
     def Execute(self):
         self.Update_Lists()
@@ -173,6 +180,7 @@ class App:
             if self.Current_Data == "`":
                 print("ending")
                 self.Output.insert(END,"-------END-------\n")
+                self.Read = False
             else:
                 self.Pointer_D += 1
                 self.frame.after(self.Delay,self.Execute)
