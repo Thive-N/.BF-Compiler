@@ -12,7 +12,8 @@ class App:
 
         #assigning the widgets to the frame
         #----------------------------------------------------------------------------------------------
-        self.CellText=Text(self.listframe,height=10,width=115).grid(column=0,row=0)
+        self.CellText=Text(self.listframe,height=10,width=115)
+        self.CellText.grid(column=0,row=0)
 
         self.TimeDelay = Scale(self.frame, from_=0, to=1000,length=400, orient=VERTICAL)
         self.TimeDelay.grid(column=2)
@@ -27,7 +28,58 @@ class App:
         #----------------------------------------------------------------------------------------------
 
         
-    
+    def Update_Lists(self):
+        text=""
+        for y in self.Cells:
+            text=text+str(y)
+            text+=" "
+
+
+        self.CellText.delete(0.0,END)
+        self.CellText.insert(0.0,text)
+        self.highlight()
+
+
+    def highlight(self):
+
+        text=self.CellText.get(0.0,END)
+        Vals=[]
+        FindEnd = False
+        LightMap = []
+
+        
+        for x,y in enumerate(text):
+            if y == " ":
+                Vals.append([y,x])
+            else:
+                Vals.append([y,x])
+                
+
+        if self.Pointer_C == 0:
+
+            FindEnd = True
+            LightMap.append(0)
+
+        COUNt = 0
+        for x in Vals:
+            if x[0] == " ":
+                COUNt += 1
+            if FindEnd == False and x[0] == " " and COUNt == self.Pointer_C:
+                LightMap.append(x[1]+1)     
+                FindEnd = True     
+                
+            elif FindEnd == True and x[0] == " ":
+                LightMap.append(x[1])
+
+                break
+        #light map is pointers for first and second " "
+
+        left = "1."+str(LightMap[0])
+        right = "1."+str(LightMap[1])
+
+        self.CellText.tag_delete("highlight")
+        self.CellText.tag_add("highlight", left , right)
+        self.CellText.tag_configure("highlight" , background="yellow")
 
     def find_pairs(self,program): # put self before program to enable class compatibility + REQIREMENTS.txt
     
@@ -72,6 +124,7 @@ class App:
 
     
     def Execute(self):
+        self.Update_Lists()
         self.Current_Data = self.Bf_Text[self.Pointer_D]
         if self.Read == True:
             
@@ -94,8 +147,9 @@ class App:
                  #I/O
 
             if self.Current_Data == ".":
-                self.Output.insert(END,"OUT: "+str(self.Cells[self.Pointer_C])+"\n")
-            if self.Current_Data == ",":
+                self.Output.insert(END,"OUT: "+chr(int(self.Cells[self.Pointer_C])))
+                self.Output.insert(END,"\n")
+            if self.Current_Data == ",": 
                 print("unimplemented")
 
             
